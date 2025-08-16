@@ -251,7 +251,11 @@ Default: `"RouteBased"`
 
 ## Outputs
 
-No outputs.
+The following outputs are exported:
+
+### <a name="output_virtual_network_gateway"></a> [virtual\_network\_gateway](#output\_virtual\_network\_gateway)
+
+Description: The object of the Virtual Network Gateway.
 
 ## Resources
 
