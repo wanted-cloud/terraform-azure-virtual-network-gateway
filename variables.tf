@@ -131,7 +131,14 @@ variable "vpn_client_configuration" {
     radius_server_secret  = optional(string, "")
     vpn_auth_types        = optional(list(string), ["AAD"])
     vpn_client_protocols  = optional(list(string), ["OpenVPN"])
-    revoked_certificates  = optional(list(string), [])
+    root_certificates = optional(list(object({
+      name             = string
+      public_cert_data = string
+    })), [])
+    revoked_certificates = optional(list(object({
+      name       = string
+      thumbprint = string
+    })), [])
   })
   default = null
 }

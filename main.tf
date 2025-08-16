@@ -40,6 +40,45 @@ resource "azurerm_virtual_network_gateway" "this" {
   }
 
   vpn_client_configuration {
-    address_space = ["10.2.0.0/24"]
+    address_space         = var.vpn_client_configuration.address_space
+    radius_server_address = var.vpn_client_configuration.radius_server_address
+    radius_server_secret  = var.vpn_client_configuration.radius_server_secret
+    vpn_auth_types        = var.vpn_client_configuration.vpn_auth_types
+    vpn_client_protocols  = var.vpn_client_configuration.vpn_client_protocols
+
+    dynamic "revoked_certificate" {
+      for_each = var.vpn_client_configuration.revoked_certificates
+      content {
+        name       = revoked_certificate.value.name
+        thumbprint = revoked_certificate.value.thumbprint
+      }
+    }
+
+    dynamic "root_certificate" {
+      for_each = var.vpn_client_configuration.root_certificates
+      content {
+        name             = root_certificate.value.name
+        public_cert_data = root_certificate.value.public_cert_data
+      }
+    }
+  }
+
+  timeouts {
+    create = try(
+      local.metadata.resource_timeouts["azurerm_virtual_network_gateway"]["create"],
+      local.metadata.resource_timeouts["default"]["create"]
+    )
+    read = try(
+      local.metadata.resource_timeouts["azurerm_virtual_network_gateway"]["read"],
+      local.metadata.resource_timeouts["default"]["read"]
+    )
+    update = try(
+      local.metadata.resource_timeouts["azurerm_virtual_network_gateway"]["update"],
+      local.metadata.resource_timeouts["default"]["update"]
+    )
+    delete = try(
+      local.metadata.resource_timeouts["azurerm_virtual_network_gateway"]["delete"],
+      local.metadata.resource_timeouts["default"]["delete"]
+    )
   }
 }
