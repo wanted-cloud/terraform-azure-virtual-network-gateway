@@ -117,7 +117,6 @@ variable "ip_configurations" {
     virtual_network_resource_group_name   = optional(string, "")
     virtual_network_name                  = string
   }))
-  default = []
 }
 
 variable "vpn_client_configuration" {

@@ -31,6 +31,23 @@ The following providers are used by this module:
 
 The following input variables are required:
 
+### <a name="input_ip_configurations"></a> [ip\_configurations](#input\_ip\_configurations)
+
+Description: List of configuration blocks for the IP configuration of the virtual network gateway.
+
+Type:
+
+```hcl
+list(object({
+    name                                  = optional(string, "vnetGatewayConfig")
+    public_ip_address_name                = optional(string, "")
+    public_ip_address_resource_group_name = optional(string, "")
+    private_ip_address_allocation         = optional(string, "Dynamic")
+    virtual_network_resource_group_name   = optional(string, "")
+    virtual_network_name                  = string
+  }))
+```
+
 ### <a name="input_name"></a> [name](#input\_name)
 
 Description: The name of the virtual network gateway to be provisioned.
@@ -102,25 +119,6 @@ Description: The generation of the virtual network gateway (e.g., 'Generation1',
 Type: `string`
 
 Default: `"None"`
-
-### <a name="input_ip_configurations"></a> [ip\_configurations](#input\_ip\_configurations)
-
-Description: List of configuration blocks for the IP configuration of the virtual network gateway.
-
-Type:
-
-```hcl
-list(object({
-    name                                  = optional(string, "vnetGatewayConfig")
-    public_ip_address_name                = optional(string, "")
-    public_ip_address_resource_group_name = optional(string, "")
-    private_ip_address_allocation         = optional(string, "Dynamic")
-    virtual_network_resource_group_name   = optional(string, "")
-    virtual_network_name                  = string
-  }))
-```
-
-Default: `[]`
 
 ### <a name="input_ip_sec_replay_protection_enabled"></a> [ip\_sec\_replay\_protection\_enabled](#input\_ip\_sec\_replay\_protection\_enabled)
 
@@ -286,6 +284,13 @@ The minimal usage for the module is as follows:
 ```hcl
 module "template" {
     source = "../.."
+
+    name   = "test-vnet-gateway"
+    resource_group_name = "example-rg"
+
+    ip_configurations = [{
+      virtual_network_name = "example-vnet"
+    }]
 }
 ```
 ## Contributing

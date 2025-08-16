@@ -35,30 +35,33 @@ resource "azurerm_virtual_network_gateway" "this" {
       name                          = ip_configuration.value.name
       public_ip_address_id          = ip_configuration.value.public_ip_address_name != "" ? data.azurerm_public_ip.this[ip_configuration.value.name].id : null
       private_ip_address_allocation = ip_configuration.value.private_ip_address_allocation
-      subnet_id                     = azurerm_subnet.this[ip_configuration.value.name]["id"]
+      subnet_id                     = data.azurerm_subnet.this[ip_configuration.value.name]["id"]
     }
   }
 
-  vpn_client_configuration {
-    address_space         = var.vpn_client_configuration.address_space
-    radius_server_address = var.vpn_client_configuration.radius_server_address
-    radius_server_secret  = var.vpn_client_configuration.radius_server_secret
-    vpn_auth_types        = var.vpn_client_configuration.vpn_auth_types
-    vpn_client_protocols  = var.vpn_client_configuration.vpn_client_protocols
+  dynamic "vpn_client_configuration" {
+    for_each = var.vpn_client_configuration != null ? [var.vpn_client_configuration] : []
+    content {
+      address_space         = vpn_client_configuration.value.address_space
+      radius_server_address = vpn_client_configuration.value.radius_server_address
+      radius_server_secret  = vpn_client_configuration.value.radius_server_secret
+      vpn_auth_types        = vpn_client_configuration.value.vpn_auth_types
+      vpn_client_protocols  = vpn_client_configuration.value.vpn_client_protocols
 
-    dynamic "revoked_certificate" {
-      for_each = var.vpn_client_configuration.revoked_certificates
-      content {
-        name       = revoked_certificate.value.name
-        thumbprint = revoked_certificate.value.thumbprint
+      dynamic "revoked_certificate" {
+        for_each = var.vpn_client_configuration.revoked_certificates
+        content {
+          name       = revoked_certificate.value.name
+          thumbprint = revoked_certificate.value.thumbprint
+        }
       }
-    }
 
-    dynamic "root_certificate" {
-      for_each = var.vpn_client_configuration.root_certificates
-      content {
-        name             = root_certificate.value.name
-        public_cert_data = root_certificate.value.public_cert_data
+      dynamic "root_certificate" {
+        for_each = var.vpn_client_configuration.root_certificates
+        content {
+          name             = root_certificate.value.name
+          public_cert_data = root_certificate.value.public_cert_data
+        }
       }
     }
   }
