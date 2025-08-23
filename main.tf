@@ -48,6 +48,10 @@ resource "azurerm_virtual_network_gateway" "this" {
       vpn_auth_types        = vpn_client_configuration.value.vpn_auth_types
       vpn_client_protocols  = vpn_client_configuration.value.vpn_client_protocols
 
+      aad_tenant   = try(vpn_client_configuration.value.aad_tenant, null)
+      aad_issuer   = try(vpn_client_configuration.value.aad_issuer, null)
+      aad_audience = try(vpn_client_configuration.value.aad_audience, null)
+
       dynamic "revoked_certificate" {
         for_each = var.vpn_client_configuration.revoked_certificates
         content {
