@@ -43,8 +43,8 @@ resource "azurerm_virtual_network_gateway" "this" {
     for_each = var.vpn_client_configuration != null ? [var.vpn_client_configuration] : []
     content {
       address_space         = vpn_client_configuration.value.address_space
-      radius_server_address = vpn_client_configuration.value.radius_server_address
-      radius_server_secret  = vpn_client_configuration.value.radius_server_secret
+      radius_server_address = vpn_client_configuration.value.radius_server_address != "" ? vpn_client_configuration.value.radius_server_address : null
+      radius_server_secret  = vpn_client_configuration.value.radius_server_secret != "" ? vpn_client_configuration.value.radius_server_secret : null
       vpn_auth_types        = vpn_client_configuration.value.vpn_auth_types
       vpn_client_protocols  = vpn_client_configuration.value.vpn_client_protocols
 
